@@ -1,0 +1,23 @@
+{
+  "name": "ma-bot",
+  "version": "1.0.0",
+  "description": "Discord bot, welcher den Konzentrationstest für die Website automatisch erstellt und den Link per e-mail den Leuten zustellt.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mmosberger/ma-bot.git"
+  },
+  "author": "Michel Mosberger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mmosberger/ma-bot/issues"
+  },
+  "homepage": "https://github.com/mmosberger/ma-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0"
+  }
+}
