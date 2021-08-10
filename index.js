@@ -1,9 +1,11 @@
 const Discord = require('discord.js');
 require("dotenv").config()
+let db = require("./database")
 
 const client = new Discord.Client();
 
 client.on('ready', () => {
+    db.init()
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
