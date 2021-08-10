@@ -17,6 +17,10 @@ const client = new Client();
 // Ready event
 client.on('ready', () => {
     console.log(`${client.user.tag} is ready!`);
+    create_symbols()
+    console.log(pickedSymbolsLegende);
+    console.log(pickedSymbols);
+    console.log(answerNumbers);
 });
 
 
@@ -35,7 +39,7 @@ client.on('message', async (message) => {
 
     switch(command){
         case 'create':
-
+            message.reply(pickedSymbolsLegende)
 
             break;
     }
@@ -65,8 +69,13 @@ function create_symbols(){
         while (pickedSymbolsLegende[i-1] === pickedSymbolsLegende[num]) {
             num = getRndInteger(1,9);
         }
-        answerNumbers.push(num)
+
+        answerNumbers.push(num + 1)
         pickedSymbols.push(pickedSymbolsLegende[num]);
 
     }
+}
+
+function create_mail(){
+
 }
