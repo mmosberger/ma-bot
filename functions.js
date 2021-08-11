@@ -25,21 +25,24 @@ class functions {
         let url;
 
 
-        let testString = `INSERT INTO test (url, finished, user_id, create_date) VALUES `
+        let testString = `INSERT INTO test (url, finished, user_id, create_date)
+                          VALUES `
         let testvalues = [];
 
 
-
-        Database.query(`SELECT * FROM user`, []).then(async (users) => {
+        Database.query(`SELECT *
+                        FROM user`, []).then(async (users) => {
 
             for (let user of users) {
                 url = this.generateURL()
                 let finished = 1;
                 let date = moment().format('YYYY-MM-DD h:mm:ss');
 
-                let urlcheck = await Database.query(`SELECT * FROM test WHERE url = (?)`, [url])
+                let urlcheck = await Database.query(`SELECT *
+                                                     FROM test
+                                                     WHERE url = (?)`, [url])
 
-                while(urlcheck.length > 0){
+                while (urlcheck.length > 0) {
                     url = this.generateURL()
                 }
 
@@ -51,7 +54,7 @@ class functions {
                     secureConnection: false,
                     port: 587,
                     tls: {
-                        ciphers:'SSLv3'
+                        ciphers: 'SSLv3'
                     },
                     auth: {
                         user: process.env.EMAIL,
@@ -78,17 +81,20 @@ class functions {
             testString = testString.replace(/,\s*$/, "");
             await Database.query(testString, testvalues).then(async (data) => {
 
-                await Database.query(`SELECT id FROM test WHERE id >= (?)`, data.insertId).then(async (a) => {
-                    for (const ids of a){
+                await Database.query(`SELECT id
+                                      FROM test
+                                      WHERE id >= (?)`, data.insertId).then(async (a) => {
+                    for (const ids of a) {
                         testIds.push(ids.id)
                     }
                 })
             })
 
-            let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id) VALUES `
+            let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id)
+                               VALUES `
             let iconsValues = [];
 
-            for (let id of testIds){
+            for (let id of testIds) {
 
                 let legende = [];
 
@@ -102,8 +108,8 @@ class functions {
                     legende.push(symbols[int].id);
                 }
 
-                for (let icon of legende){
-                    for (let i = 1; i < 10; i++){
+                for (let icon of legende) {
+                    for (let i = 1; i < 10; i++) {
                         iconsString += '(?, ?, ?), '
                         iconsValues.push(i, icon, id)
                     }
@@ -115,30 +121,6 @@ class functions {
             console.log(iconsValues);
         })
     };
-
-
-    static pickLegend(){
-
-        //let legendString =
-        for (let i = 0; i < 9; i++) {
-            let int = getRndInteger(0, (symbols.length - 1));
-
-            while (pickedSymbolsLegende.includes(symbols[int].id)) {
-                int = getRndInteger(0, (symbols.length) - 1);
-            }
-
-            pickedSymbolsLegende.push(symbols[int].id);
-        }
-        /**for (let i = 1; i < 10; i++){
-
-        }**/
-
-        console.log(pickedSymbolsLegende)
-
-
-    }
-
-
 
     static generateURL() {
         let result = '';
