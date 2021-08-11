@@ -14,7 +14,6 @@ let answerNumbers = [];
 // Ready event
 client.on('ready', async () => {
     console.log(`${client.user.tag} is ready!`);
-    await functions.createTest()
 });
 
 
@@ -31,8 +30,12 @@ client.on('message', async (message) => {
 
     switch(command){
         case 'create':
-
-
+            await functions.createTest()
+            message.reply(":warning: Tests sind in Erstellung...").then((msg) => {
+                setTimeout(function() {
+                    msg.edit(":white_check_mark: Tests wurden erstellt und den Leuten zugestellt.",)
+                }, 5000)
+            })
             break;
     }
 });

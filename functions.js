@@ -13,9 +13,6 @@ const nodemailer = require("nodemailer");
 require('dotenv').config();
 
 
-let pickedSymbolsLegende = [];
-let pickedSymbols = [];
-let answerNumbers = [];
 let testIds = [];
 
 class functions {
@@ -93,6 +90,7 @@ class functions {
             for (let id of testIds) {
 
                 let legende = [];
+                let numbers = [];
 
                 for (let i = 0; i < 9; i++) {
                     let int = getRndInteger(0, (symbols.length - 1));
@@ -104,24 +102,41 @@ class functions {
                     legende.push(symbols[int].id);
                 }
 
-                let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id)
-                               VALUES `
-                let iconsValues = [];
+                for (let i = 0; i < 100; i++) {
+                    let int = getRndInteger(0, 8);
 
-                for (let i = 0; i < 9; i++){
+                    while (numbers[i - 1] === legende[int]) {
+                        int = getRndInteger(0, 8)
+                    }
+
+                    numbers.push(legende[int])
+                }
+
+
+                let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id)
+                                   VALUES `;
+                let answersString = `INSERT INTO answers (answer_no, icon_id, test_id)
+                                     VALUES `;
+                let iconsValues = [];
+                let answersValues = [];
+
+                for (let i = 0; i < 9; i++) {
                     iconsString += `(?, ?, ?), `
-                    iconsValues.push(i+1, legende[i], id)
+                    iconsValues.push(i + 1, legende[i], id)
+                }
+
+                for (let number of numbers) {
+                    let legendeZeichen = legende.indexOf(number) + 1;
+
+                    answersString += '(?, ?, ?), '
+                    answersValues.push(legendeZeichen, number, id);
                 }
 
                 iconsString = iconsString.replace(/,\s*$/, "");
+                answersString = answersString.replace(/,\s*$/, "");
 
-                await Database.query(iconsString, iconsValues)
-
-
-                let answersString = `INSERT INTO answers (answers_no, icon_id, test_id) VALUES `;
-                let answersValues = [];
-
-
+                await Database.query(iconsString, iconsValues);
+                await Database.query(answersString, answersValues);
             }
 
         })
