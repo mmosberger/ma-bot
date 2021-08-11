@@ -90,10 +90,6 @@ class functions {
                 })
             })
 
-            let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id)
-                               VALUES `
-            let iconsValues = [];
-
             for (let id of testIds) {
 
                 let legende = [];
@@ -108,17 +104,20 @@ class functions {
                     legende.push(symbols[int].id);
                 }
 
-                for (let icon of legende) {
-                    for (let i = 1; i < 10; i++) {
-                        iconsString += '(?, ?, ?), '
-                        iconsValues.push(i, icon, id)
-                    }
+                let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id)
+                               VALUES `
+                let iconsValues = [];
+
+                for (let i = 0; i < 9; i++){
+                    iconsString += `(?, ?, ?), `
+                    iconsValues.push(i+1, legende[i], id)
                 }
 
-            }
-            iconsString = iconsString.replace(/,\s*$/, "");
+                iconsString = iconsString.replace(/,\s*$/, "");
 
-            console.log(iconsValues);
+                await Database.query(iconsString, iconsValues)
+            }
+
         })
     };
 
