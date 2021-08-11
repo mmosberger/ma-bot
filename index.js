@@ -1,26 +1,20 @@
-const { Client, MessageEmbed } = require('discord.js');
+const { Client } = require('discord.js');
 require("dotenv").config();
-let db = require("./database")
+const functions = require("./functions");
+const symbols = require('./symbols.json')
 
-const symbols = [
-    "↔", "∏", "↕", "―", "Ѱ", "ф", "Σ", "˄", "X", "∟", "≤", "≠", "U", "=", "!", "0"
-]
-const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+const client = new Client();
+
 let pickedSymbolsLegende = [];
 let pickedSymbols = [];
 let answerNumbers = [];
 
 
-const client = new Client();
-
-
 // Ready event
-client.on('ready', () => {
+client.on('ready', async () => {
     console.log(`${client.user.tag} is ready!`);
-    create_symbols()
-    console.log(pickedSymbolsLegende);
-    console.log(pickedSymbols);
-    console.log(answerNumbers);
+    await functions.createTest()
 });
 
 
@@ -35,47 +29,19 @@ client.on('message', async (message) => {
     if (!message.content.startsWith(prefix)) return;
     if (message.guild && !message.member) await message.guild.fetch.members(message.author);
 
-    let member = message.guild.member(message.mentions.users.first() || args[0]);
-
     switch(command){
         case 'create':
-            message.reply(pickedSymbolsLegende)
+
 
             break;
     }
 });
 
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN).then();
 
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function create_symbols(){
-    for (let i = 0; i < 9; i++) {
-        let int = getRndInteger(0, (symbols.length - 1));
 
-        while (pickedSymbolsLegende.includes(symbols[int])) {
-            int = getRndInteger(0, (symbols.length) - 1);
-        }
 
-        pickedSymbolsLegende.push(symbols[int]);
-    }
-
-    for (let i = 0; i < 100; i++) {
-
-        let num = getRndInteger(0, 8)
-
-        while (pickedSymbolsLegende[i-1] === pickedSymbolsLegende[num]) {
-            num = getRndInteger(1,9);
-        }
-
-        answerNumbers.push(num + 1)
-        pickedSymbols.push(pickedSymbolsLegende[num]);
-
-    }
-}
-
-function create_mail(){
-
-}
