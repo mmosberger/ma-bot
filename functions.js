@@ -116,6 +116,12 @@ class functions {
                 iconsString = iconsString.replace(/,\s*$/, "");
 
                 await Database.query(iconsString, iconsValues)
+
+
+                let answersString = `INSERT INTO answers (answers_no, icon_id, test_id) VALUES `;
+                let answersValues = [];
+
+
             }
 
         })
