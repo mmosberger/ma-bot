@@ -58,21 +58,27 @@ class functions {
                         pass: process.env.MAIL_PASSWORD
                     }
                 });
+                let person = userlist.find(x => x.id === user.id)
                 let mailOptions = {
                     from: '"Michel Mosberger" <michel.mosberger@stud.lgr.ch>',
-                    to: userlist.find(x => x.id === user.id).email,
-                    subject: 'Test ',
+                    to: person.email,
+                    subject: 'Schlaf - Konzentrationsfähigkeit',
                     text: 'Hello world ',
-                    html: '<b>Hello world </b><br> This is the first email sent with Nodemailer in Node.js'
+                    html: `<p><b>Lieber ${person.first_name}</b></p>
+Dein Test ist für dich bereit. Du kannst ihn unter <a href="https://www.konzentrationstest.ch/test/${url}">konzentrationstest.ch/test/${url}</a> besuchen. Bei fragen kannst du mir gerne ein e-mail schreiben. Ich wünsche dir viel Erfolg dabei.</p>
+
+<p>Beste Grüsse,</p>
+
+<p>Michel Mosberger</p>`
                 };
 
-                /**transporter.sendMail(mailOptions, function(error, info){
-                    if(error){
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
                         return console.log(error);
                     }
 
                     console.log('Message sent: ' + info.response);
-                });**/
+                });
             }
 
             testString = testString.replace(/,\s*$/, "");
