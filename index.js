@@ -1,4 +1,4 @@
-const { Client } = require('discord.js');
+const {Client} = require('discord.js');
 require("dotenv").config();
 const functions = require("./functions");
 const symbols = require('./symbols.json')
@@ -28,23 +28,19 @@ client.on('message', async (message) => {
     if (!message.content.startsWith(prefix)) return;
     if (message.guild && !message.member) await message.guild.fetch.members(message.author);
 
-    switch(command){
+    switch (command) {
         case 'create':
-            await functions.createTest()
-            message.reply(":warning: Tests sind in Erstellung...").then((msg) => {
-                setTimeout(function() {
-                    msg.edit(":white_check_mark: Tests wurden erstellt und den Leuten zugestellt.",)
-                }, 5000)
-            })
+            await functions.createTests()
+            let msg = await message.reply(":warning: Tests sind in Erstellung...")
+
+            setTimeout(function () {
+                msg.edit(":white_check_mark: Tests wurden erstellt und den Leuten zugestellt.",)
+            }, 5000)
+
             break;
+        default:
+            await message.reply("...")
     }
 });
 
-client.login(process.env.TOKEN).then();
-
-function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-
-
+client.login(process.env.TOKEN)
