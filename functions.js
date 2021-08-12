@@ -42,8 +42,8 @@ class functions {
             while (urlcheck.length > 0) {
                 url = this.generateURL()
                 urlcheck = await Database.query(`SELECT *
-                                                        FROM test
-                                                        WHERE url = (?)`, [url])
+                                                 FROM test
+                                                 WHERE url = (?)`, [url])
             }
 
             testString += `(?, ?, ?, ?), `
@@ -85,17 +85,15 @@ class functions {
         }
 
         testString = testString.replace(/,\s*$/, "");
-        // TODO remove .then()
-        await Database.query(testString, testvalues).then(async (data) => {
 
-            await Database.query(`SELECT id
-                                  FROM test
-                                  WHERE id >= (?)`, data.insertId).then(async (a) => {
-                for (const ids of a) {
-                    testIds.push(ids.id)
-                }
-            })
-        })
+        let inserted = await Database.query(testString, testvalues)
+        let lastIds = await Database.query(`SELECT id
+                                            FROM test
+                                            WHERE id >= (?)`, inserted.insertId)
+        for (const ids of lastIds) {
+            testIds.push(ids.id)
+        }
+
 
         for (let id of testIds) {
 
