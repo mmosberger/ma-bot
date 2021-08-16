@@ -8,7 +8,6 @@
 const symbols = require("./symbols.json");
 const Database = require("./database");
 const userlist = require('./users.json');
-const moment = require("moment");
 const nodemailer = require("nodemailer");
 require('dotenv').config();
 
@@ -33,7 +32,6 @@ class functions {
         for (let user of users) {
             url = this.generateURL()
             let finished = 0;
-            let date = moment().format('YYYY-MM-DD h:mm:ss');
 
             let urlcheck = await Database.query(`SELECT *
                                                  FROM test
@@ -47,7 +45,7 @@ class functions {
             }
 
             testString += `(?, ?, ?, ?), `
-            testvalues.push(url, finished, user.id, date)
+            testvalues.push(url, finished, user.id, new Date())
 
             let transporter = nodemailer.createTransport({
                 host: "smtp.office365.com",
@@ -67,7 +65,7 @@ class functions {
                 to: person.email,
                 subject: 'Schlaf - Konzentrationsfähigkeit',
                 text: 'Hello world ',
-                html: `<p><b>Lieber ${person.first_name}</b></p>
+                html: `<p><b>Liebe/Lieber ${person.first_name}</b></p>
                     Dein Test ist für dich bereit. Du kannst ihn unter <a href="https://www.konzentrationstest.ch/test/${url}">konzentrationstest.ch/test/${url}</a> besuchen. Bei fragen kannst du mir gerne ein e-mail schreiben. Ich wünsche dir viel Erfolg dabei.</p>
                     
                     <p>Beste Grüsse,</p>
