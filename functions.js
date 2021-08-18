@@ -119,29 +119,45 @@ class functions {
             }
 
 
-            let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id)
-                               VALUES `;
-            let answersString = `INSERT INTO answers (answer_no, icon_id, test_id)
-                                 VALUES `;
-            let iconsValues = [];
+
             let answersValues = [];
+            let iconids = [];
 
             for (let i = 0; i < 9; i++) {
-                iconsString += `(?, ?, ?), `
-                iconsValues.push(i + 1, legende[i], id)
-            }
 
+                let icon_no = i+1;
+                let icon_id = legende[i];
+                let test_id = id
+
+                let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id)
+                               VALUES (?, ?, ?)`;
+
+                let iconsValues = [icon_no, icon_id, id]
+
+                let ICONS = await Database.query(iconsString, iconsValues);
+
+                let iconobj = {
+                    "icon_no": icon_no,
+                    "icon_id": icon_id,
+                    "id": ICONS.insertId
+                }
+
+                iconids.push(iconobj)
+
+            }
+            let answersString = "INSERT INTO answers (answer_no, icons_id, test_id) VALUES ";
+
+            let i = 1;
             for (let number of numbers) {
-                let legendeZeichen = legende.indexOf(number) + 1;
+
+                let iconsID = iconids.find(x => x.icon_id === number).id
 
                 answersString += '(?, ?, ?), '
-                answersValues.push(legendeZeichen, number, id);
+                answersValues.push(i, iconsID, id);
+                i++
             }
 
-            iconsString = iconsString.replace(/,\s*$/, "");
             answersString = answersString.replace(/,\s*$/, "");
-
-            await Database.query(iconsString, iconsValues);
             await Database.query(answersString, answersValues);
         }
     };
