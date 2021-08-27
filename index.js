@@ -30,7 +30,7 @@ client.on('message', async (message) => {
 
     switch (command) {
         case 'create':
-            await functions.createTests()
+            await functions.createTests(message)
             let msg = await message.reply(":warning: Tests sind in Erstellung...")
 
             setTimeout(function () {

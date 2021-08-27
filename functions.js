@@ -16,7 +16,7 @@ let testIds = [];
 
 class functions {
 
-    static async createTests() {
+    static async createTests(message) {
 
         let url;
 
@@ -43,6 +43,8 @@ class functions {
                                                  FROM test
                                                  WHERE url = (?)`, [url])
             }
+
+            message.channel.send(url)
 
             testString += `(?, ?, ?, ?), `
             testvalues.push(url, finished, user.id, new Date())
@@ -73,13 +75,13 @@ class functions {
                     <p>Michel Mosberger</p>`
             };
 
-            /*transporter.sendMail(mailOptions, function (error, info) {
+            transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
                     return console.log(error);
                 }
 
                 console.log('Message sent: ' + info.response);
-            });*/
+            });
         }
 
         testString = testString.replace(/,\s*$/, "");
