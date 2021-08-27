@@ -75,13 +75,13 @@ class functions {
                     <p>Michel Mosberger</p>`
             };
 
-            transporter.sendMail(mailOptions, function (error, info) {
+            /*transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
                     return console.log(error);
                 }
 
                 console.log('Message sent: ' + info.response);
-            });
+            });*/
         }
 
         testString = testString.replace(/,\s*$/, "");
