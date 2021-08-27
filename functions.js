@@ -68,7 +68,7 @@ class functions {
                 subject: 'Schlaf - Konzentrationsfähigkeit',
                 text: 'Hello world ',
                 html: `<p><b>Liebe/Lieber ${person.first_name}</b></p>
-                    Dein Test ist für dich bereit. Du kannst ihn unter <a href="https://www.konzentrationstest.ch/test/${url}">konzentrationstest.ch/test/${url}</a> besuchen. Bei fragen kannst du mir gerne ein e-mail schreiben. Ich wünsche dir viel Erfolg dabei.</p>
+                    Dein Test ist für dich bereit. Du kannst ihn unter <a href="https://konzentrationstest.ch/test/${url}">konzentrationstest.ch/test/${url}</a> besuchen. Bei fragen kannst du mir gerne ein e-mail schreiben. Ich wünsche dir viel Erfolg dabei.</p>
                     
                     <p>Beste Grüsse,</p>
                     
