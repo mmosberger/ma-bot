@@ -131,8 +131,7 @@ class functions {
                 let icon_id = legende[i];
                 let test_id = id
 
-                let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id)
-                               VALUES (?, ?, ?)`;
+                let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id) VALUES (?, ?, ?)`;
 
                 let iconsValues = [icon_no, icon_id, id]
 
