@@ -90,10 +90,11 @@ class functions {
         let lastIds = await Database.query(`SELECT id
                                             FROM test
                                             WHERE id >= (?)`, inserted.insertId)
+
+
         for (const ids of lastIds) {
             testIds.push(ids.id)
         }
-
 
         for (let id of testIds) {
 
@@ -146,7 +147,7 @@ class functions {
                 iconids.push(iconobj)
 
             }
-            let answersString = "INSERT INTO answers (answer_no, icons_id, test_id) VALUES ";
+            let answersString = 'INSERT INTO answers (answer_no, icons_id, test_id) VALUES ';
 
             let i = 1;
             for (let number of numbers) {
