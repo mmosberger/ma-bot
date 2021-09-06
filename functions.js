@@ -1,5 +1,5 @@
 /**
- *Description of functions
+ *Description of statics
  *@author Michel Mosberger
  *@version 1.0
  *@since 10.08.2021
@@ -12,174 +12,156 @@ const nodemailer = require("nodemailer");
 require('dotenv').config();
 
 
-let testIds = [];
+let usedIcons;
+let iconIds;
 
-class functions {
+class statics {
 
-    static async createTests(message) {
-
-        let url;
-
-
-        let testString = `INSERT INTO test (url, finished, user_id, create_date)
-                          VALUES `
-        let testvalues = [];
-
+    static async generateTests(message) {
 
         let users = await Database.query(`SELECT *
                                           FROM user`, []);
 
         for (let user of users) {
-            url = this.generateURL()
-            let finished = 0;
 
-            let urlcheck = await Database.query(`SELECT *
-                                                 FROM test
-                                                 WHERE url = (?)`, [url])
+            usedIcons = [];
+            iconIds = [];
+            let url;
 
-            while (urlcheck.length > 0) {
-                url = this.generateURL()
-                urlcheck = await Database.query(`SELECT *
-                                                 FROM test
-                                                 WHERE url = (?)`, [url])
+            let test = {
+                url: url = this.generateUrl(),
+                user_id: user.id,
+                finished: 0,
+                create_date: new Date()
             }
 
+
+            let testId = await Database.query(
+                `INSERT INTO test (url, finished, create_date, user_id)
+                 VALUES (?, ?, ?, ?)`,
+                [test.url, test.finished, test.create_date, test.user_id]);
+
+            await this.createAllIcons(testId);
+
+            await this.createAllAnswers(testId);
+
+            await this.sendMail(user, url);
+
             message.channel.send(url)
+        }
+    }
 
-            testString += `(?, ?, ?, ?), `
-            testvalues.push(url, finished, user.id, new Date())
+    static async createAllIcons(testId) {
 
-            let transporter = nodemailer.createTransport({
-                host: "smtp.office365.com",
-                secureConnection: false,
-                port: 587,
-                tls: {
-                    ciphers: 'SSLv3'
-                },
-                auth: {
-                    user: process.env.EMAIL,
-                    pass: process.env.MAIL_PASSWORD
-                }
-            });
-            let person = userlist.find(x => x.id === user.id)
-            let mailOptions = {
-                from: '"Michel Mosberger" <michel.mosberger@stud.lgr.ch>',
-                to: person.email,
-                subject: 'Schlaf - Konzentrationsfähigkeit',
-                text: 'Hello world ',
-                html: `<p><b>Liebe/Lieber ${person.first_name}</b></p>
+        const jsonData = [...symbols];
+        const shuffledJsonData = jsonData.sort((a, b) => 0.5 - Math.random());
+
+        for (let i = 0; i < 9; i++) {
+            let icon = {
+                icon_no: i,
+                icon_id: shuffledJsonData[i].id,
+                test_id: testId.insertId
+            }
+
+            usedIcons.push(shuffledJsonData[i].id);
+
+            let queryString = 'INSERT INTO icons (icon_no, icon_id, test_id) VALUES (?, ?, ?)'
+            let queryValues = [icon.icon_no, icon.icon_id, icon.test_id]
+
+            let savedIcon = await Database.query(queryString, queryValues);
+            iconIds.push({
+                id: savedIcon.insertId,
+                icon_id: shuffledJsonData[i].id
+            })
+        }
+    }
+
+    static async createAllAnswers(testId) {
+
+        let lastNumber = 1;
+
+        let queryString = 'INSERT INTO answers (answer_no, test_id, icons_id) VALUES '
+        let queryValues = [];
+
+        for (let i = 0; i < 100; i++) {
+
+            let number = this.getRndInteger(0, 8);
+
+            while (lastNumber === number) {
+                number = this.getRndInteger(0, 8);
+            }
+
+            let answer = {
+                answer_no: i,
+                test_id: testId.insertId,
+                icons_id: iconIds[number].id
+            }
+
+            queryValues.push(answer.answer_no, answer.test_id, answer.icons_id)
+            queryString += '(?, ?, ?), '
+            lastNumber = number;
+
+
+        }
+
+        queryString = queryString.replace(/,\s*$/, "");
+
+        let savedAnswer = await Database.query(queryString, queryValues)
+
+    }
+
+    static sendMail(user, url) {
+
+
+        let transporter = nodemailer.createTransport({
+            host: "smtp.office365.com",
+            secureConnection: false,
+            port: 587,
+            tls: {
+                ciphers: 'SSLv3'
+            },
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.MAIL_PASSWORD
+            }
+        });
+        let person = userlist.find(x => x.id === user.id)
+        let mailOptions = {
+            from: '"Michel Mosberger" <michel.mosberger@stud.lgr.ch>',
+            to: person.email,
+            subject: 'Schlaf - Konzentrationsfähigkeit',
+            text: 'Hello world ',
+            html: `<p><b>Liebe/Lieber ${person.first_name}</b></p>
                     Dein Test ist für dich bereit. Du kannst ihn unter <a href="https://konzentrationstest.ch/test/${url}">konzentrationstest.ch/test/${url}</a> besuchen. Bei fragen kannst du mir gerne ein e-mail schreiben. Ich wünsche dir viel Erfolg dabei.</p>
                     
                     <p>Beste Grüsse,</p>
                     
                     <p>Michel Mosberger</p>`
-            };
+        };
 
-            /*transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                    return console.log(error);
-                }
-
-                console.log('Message sent: ' + info.response);
-            });*/
-        }
-
-        testString = testString.replace(/,\s*$/, "");
-
-        let inserted = await Database.query(testString, testvalues)
-        let lastIds = await Database.query(`SELECT id
-                                            FROM test
-                                            WHERE id >= (?)`, inserted.insertId)
-
-
-        for (const ids of lastIds) {
-            testIds.push(ids.id)
-        }
-
-        for (let id of testIds) {
-
-            let legende = [];
-            let numbers = [];
-
-            for (let i = 0; i < 9; i++) {
-                let int = getRndInteger(0, (symbols.length - 1));
-
-                while (legende.includes(symbols[int].id)) {
-                    int = getRndInteger(0, (symbols.length) - 1);
-                }
-
-                legende.push(symbols[int].id);
+        /*transporter.sendMail(mailOptions, static (error, info) {
+            if (error) {
+                return console.log(error);
             }
 
-            for (let i = 0; i < 100; i++) {
-                let int = getRndInteger(0, 8);
+            console.log('Message sent: ' + info.response);
+        });*/
 
-                while (numbers[i - 1] === legende[int]) {
-                    int = getRndInteger(0, 8)
-                }
+    }
 
-                numbers.push(legende[int])
-            }
+    static getRndInteger(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
-
-
-            let answersValues = [];
-            let iconids = [];
-
-            for (let i = 0; i < 9; i++) {
-
-                let icon_no = i+1;
-                let icon_id = legende[i];
-                let test_id = id
-
-                let iconsString = `INSERT INTO icons (icon_no, icon_id, test_id) VALUES (?, ?, ?)`;
-
-                let iconsValues = [icon_no, icon_id, id]
-
-                let ICONS = await Database.query(iconsString, iconsValues);
-
-                let iconobj = {
-                    "icon_no": icon_no,
-                    "icon_id": icon_id,
-                    "id": ICONS.insertId
-                }
-
-                iconids.push(iconobj)
-
-            }
-            let answersString = 'INSERT INTO answers (answer_no, icons_id, test_id) VALUES ';
-
-            let i = 1;
-            for (let number of numbers) {
-
-                let iconsID = iconids.find(x => x.icon_id === number).id
-
-                answersString += '(?, ?, ?), '
-                answersValues.push(i, iconsID, id);
-                i++
-            }
-
-            answersString = answersString.replace(/,\s*$/, "");
-            await Database.query(answersString, answersValues);
-        }
-    };
-
-    static generateURL() {
+    static generateUrl() {
         let result = '';
         let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let charactersLength = characters.length;
-        for (let i = 0; i < 25; i++) {
+        for (let i = 0; i < 30; i++) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return result;
     }
-
-
 }
 
-function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-
-module.exports = functions
+module.exports = statics

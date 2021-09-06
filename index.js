@@ -1,17 +1,11 @@
 const {Client} = require('discord.js');
 require("dotenv").config();
 const functions = require("./functions");
-const symbols = require('./symbols.json')
 
 
 const client = new Client();
 
-let pickedSymbolsLegende = [];
-let pickedSymbols = [];
-let answerNumbers = [];
 
-
-// Ready event
 client.on('ready', async () => {
     console.log(`${client.user.tag} is ready!`);
 });
@@ -30,7 +24,7 @@ client.on('message', async (message) => {
 
     switch (command) {
         case 'create':
-            await functions.createTests(message)
+            await functions.generateTests(message)
             let msg = await message.reply(":warning: Tests sind in Erstellung...")
 
             setTimeout(function () {
