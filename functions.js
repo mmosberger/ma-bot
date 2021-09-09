@@ -58,7 +58,7 @@ class statics {
 
         for (let i = 0; i < 9; i++) {
             let icon = {
-                icon_no: i,
+                icon_no: i+1,
                 icon_id: shuffledJsonData[i].id,
                 test_id: testId.insertId
             }
