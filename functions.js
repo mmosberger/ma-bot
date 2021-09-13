@@ -47,7 +47,41 @@ class statics {
 
             await this.sendMail(user, url);
 
-            message.channel.send(url)
+            message.channel.send(`${url}, ${user.name}`)
+        }
+    }
+
+    static async generateTeacherTests(message) {
+
+        let users = await Database.query(`SELECT *
+                                          FROM user WHERE disabled =?`, [1]);
+
+        for (let user of users) {
+
+            usedIcons = [];
+            iconIds = [];
+            let url;
+
+            let test = {
+                url: url = this.generateUrl(),
+                user_id: user.id,
+                finished: 0,
+                create_date: new Date()
+            }
+
+
+            let testId = await Database.query(
+                `INSERT INTO test (url, finished, create_date, user_id)
+                 VALUES (?, ?, ?, ?)`,
+                [test.url, test.finished, test.create_date, test.user_id]);
+
+            await this.createAllIcons(testId);
+
+            await this.createAllAnswers(testId);
+
+            await this.sendMail(user, url);
+
+            message.channel.send(`${url}, ${user.name}`)
         }
     }
 
