@@ -22,6 +22,8 @@ client.on('message', async (message) => {
     if (!message.content.startsWith(prefix)) return;
     if (message.guild && !message.member) await message.guild.fetch.members(message.author);
 
+    if(!message.member.hasPermission("ADMINISTRATOR")) return;
+
     switch (command) {
         case 'create':
             await functions.generateTests(message)
@@ -32,6 +34,17 @@ client.on('message', async (message) => {
             }, 5000)
 
             break;
+
+        case 'teacher':
+            await functions.generateTeacherTests(message)
+            let msssg = await message.reply(":warning: Tests sind in Erstellung...")
+
+            setTimeout(function () {
+                msssg.edit(":white_check_mark: Tests wurden erstellt und den Leuten zugestellt.",)
+            }, 5000)
+
+            break;
+
         default:
             await message.reply("...")
     }
