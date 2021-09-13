@@ -79,8 +79,6 @@ class statics {
 
             await this.createAllAnswers(testId);
 
-            await this.sendMail(user, url);
-
             message.channel.send(`${url}, ${user.name}`)
         }
     }
