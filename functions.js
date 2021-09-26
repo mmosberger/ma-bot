@@ -142,42 +142,36 @@ class statics {
 
     }
 
-    static sendMail(user, url) {
+    static async sendMail(user, url) {
 
 
         let transporter = nodemailer.createTransport({
             host: "smtp.office365.com",
             secureConnection: false,
             port: 587,
-            tls: {
-                ciphers: 'SSLv3'
-            },
+            tls: {ciphers: 'SSLv3'},
             auth: {
                 user: process.env.EMAIL,
                 pass: process.env.MAIL_PASSWORD
             }
         });
+
         let person = userlist.find(x => x.id === user.id)
-        let mailOptions = {
+
+        let info = await transporter.sendMail({
             from: '"Michel Mosberger" <michel.mosberger@stud.lgr.ch>',
             to: person.email,
             subject: 'Schlaf - Konzentrationsfähigkeit',
-            html: `<p><b>Liebe/Lieber ${person.first_name}</b></p>
-                    Dein Test ist für dich bereit. Du kannst ihn unter <a href="https://konzentrationstest.ch/test/${url}">konzentrationstest.ch/test/${url}</a> besuchen. Bei fragen kannst du mir gerne ein e-mail schreiben. Ich wünsche dir viel Erfolg dabei.</p>
+            html: `<p>Liebe Teilnehmerin<br>Lieber Teilnehmer<br></p>
+                    Dein Test ist für dich bereit. Du kannst ihn unter <a href="https://konzentrationstest.ch/test/${url}">diesem Link</a> abrufen. Bei Fragen kannst du mir gerne eine e-Mail schreiben. Ich wünsche dir viel Erfolg dabei.</p><br>Ps. Bitte führe den Test erst morgens nach dem Aufstehen durch.
                     
-                    <p>Beste Grüsse,</p>
+                    
+                    <p>Beste Grüsse und vielen Dank</p>
                     
                     <p>Michel Mosberger</p>`
-        };
+        })
 
-        /*transporter.sendMail(mailOptions, static (error, info) {
-            if (error) {
-                return console.log(error);
-            }
-
-            console.log('Message sent: ' + info.response);
-        });*/
-
+        console.log('Message sent: %s', info.response);
     }
 
     static getRndInteger(min, max) {
