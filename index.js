@@ -1,6 +1,7 @@
 const {Client} = require('discord.js');
 require("dotenv").config();
 const functions = require("./functions");
+const users = require('./users.json')
 
 
 const client = new Client();
@@ -45,8 +46,12 @@ client.on('message', async (message) => {
 
             break;
 
+        case 'email':
+            message.channel.send(users.map((u) => u.email).join('; '))
+            break;
+
         default:
-            await message.reply("...")
+            await message.channel.send("...")
     }
 });
 
