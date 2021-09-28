@@ -163,7 +163,7 @@ class statics {
             to: person.email,
             subject: 'Schlaf - Konzentrationsfähigkeit',
             html: `<p>Liebe Teilnehmerin<br>Lieber Teilnehmer<br></p>
-                    Dein Test ist für dich bereit. Du kannst ihn unter <a href="https://konzentrationstest.ch/test/${url}">diesem Link</a> abrufen. Bei Fragen kannst du mir gerne eine e-Mail schreiben. Ich wünsche dir viel Erfolg dabei und rate dir davon ab, den Test auf dem Browser "FireFox" durchzuführen (Das Datum muss dort in einem speziellen Format angegeben werden).<br>Ps. Bitte führe den Test erst morgens nach dem Aufstehen durch und denke bitte daran dass die Uhrzeit im 24 Stunden Format angegeben werden sollte.</p>
+                    Dein Test ist für dich bereit. Du kannst ihn unter <a href="https://konzentrationstest.ch/test/${url}">diesem Link</a> abrufen. Bei Fragen kannst du mir gerne eine e-Mail schreiben. Ich wünsche dir viel Erfolg dabei.<br><br>Ps. Bitte führe den Test erst morgens nach dem Aufstehen durch und denke bitte daran dass die Uhrzeit im 24 Stunden Format angegeben werden sollte.</p>
                     
                     
                     <p>Beste Grüsse und vielen Dank</p>
