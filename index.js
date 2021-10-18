@@ -50,6 +50,10 @@ client.on('message', async (message) => {
             message.channel.send(users.map((u) => u.email).join('; '))
             break;
 
+        case 'answers':
+            await functions.checkWrongAnswers(message)
+            break;
+
         default:
             await message.channel.send("...")
     }

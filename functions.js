@@ -174,6 +174,30 @@ class statics {
         console.log('Message sent: %s', info.response);
     }
 
+
+    static async checkWrongAnswers(message) {
+
+        let tests = await Database.query('SELECT id FROM test', [])
+
+
+        for (let test of tests){
+            let wrongAnswersQuery = `SELECT * from answers INNER JOIN icons i on answers.icons_id = i.id where answers.user_input != i.icon_no AND answers.user_input is not NULL AND answers.test_id=?;`
+
+
+            let WrongQueryString = 'UPDATE test set incorrect_answers=? WHERE id=?'
+            let AnswersQueryString = 'SELECT MAX(answer_no) FROM answers WHERE test_id=? AND user_input is not NULL'
+            let inputAnswersQueryString = "UPDATE test set num_answers=? WHERE id=?"
+
+            let getAnswers = await Database.query(AnswersQueryString, [test.id])
+            let req = await Database.query(wrongAnswersQuery, [test.id])
+
+            let inputWrongAnswers = await Database.query(WrongQueryString, [req.length, test.id])
+            let inputAnswers = await Database.query(inputAnswersQueryString, [getAnswers[0]["MAX(answer_no)"] + 1, test.id])
+        }
+
+        return message.channel.send("done");
+    }
+
     static getRndInteger(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
